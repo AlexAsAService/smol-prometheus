@@ -48,3 +48,11 @@ docker run -d \
 - `/etc/prometheus/prometheus.yml`: Default configuration file path.
 - `/prometheus`: Working directory and default TSDB storage path.
 - `/usr/share/prometheus/`: Console templates and libraries.
+
+## CI/CD
+
+This repository uses GitHub Actions for automated building and publishing:
+
+- **Continuous Integration (`ci.yml`)**: On every Pull Request, the container is built and a smoke test is run against the Prometheus `/-/healthy` endpoint to ensure the binary starts correctly.
+- **Automated Tagging (`tag-release.yml`)**: When a PR is merged to `main`, a new version tag is automatically created (e.g., `vYYYY.MM.DD-sha`). It also collects all commit messages since the last release to populate the changelog.
+- **Publishing (`publish.yml`)**: Once a new tag is pushed, it builds the production image, pushes it to the GitHub Container Registry (GHCR), and creates a GitHub Release.

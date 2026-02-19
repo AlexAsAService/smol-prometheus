@@ -1,6 +1,6 @@
-ARG ALPINE_VERSION=3.19
-ARG UID=100
-ARG GID=100
+ARG ALPINE_VERSION=3.23.3
+ARG UID=1000
+ARG GID=1000
 
 # Stage 1: Build
 FROM alpine:${ALPINE_VERSION} AS builder
@@ -28,8 +28,6 @@ WORKDIR /prometheus
 
 # Copy the binary from the builder stage
 COPY --from=builder /build/prometheus /usr/local/bin/prometheus
-COPY --from=builder /build/console_libraries /usr/share/prometheus/console_libraries
-COPY --from=builder /build/consoles /usr/share/prometheus/consoles
 
 # Setup directories and permissions
 RUN mkdir -p /etc/prometheus /prometheus /usr/share/prometheus && \
@@ -49,6 +47,4 @@ EXPOSE 9090
 # Set the entrypoint and default flags
 ENTRYPOINT ["/usr/local/bin/prometheus"]
 CMD ["--config.file=/etc/prometheus/prometheus.yml", \
-     "--storage.tsdb.path=/prometheus", \
-     "--web.console.libraries=/usr/share/prometheus/console_libraries", \
-     "--web.console.templates=/usr/share/prometheus/consoles"]
+     "--storage.tsdb.path=/prometheus"]
